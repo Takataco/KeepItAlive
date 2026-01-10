@@ -6,6 +6,13 @@ using UnityEngine;
 public class PlayerCharacter : Character
 {
     //---- Functions ----
+    public override void Start()
+    {
+        base.Start();
+        LiveComponent = new PlayerLiveComponent();
+
+    }
+
     public override void Update()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");

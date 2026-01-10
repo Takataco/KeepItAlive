@@ -6,9 +6,15 @@ public class EnemyCharacter : Character
 {
     // ---- Attributes ----
     [SerializeField] private AiState aiState;
-    [SerializeField] private Character targetCharacter; 
+    [SerializeField] private Character targetCharacter;
 
     //----Functions----
+    public override void Start()
+    {
+        base.Start();
+        LiveComponent = new EnemyLiveComponent();
+    }
+
     public override void Update()
     {
         switch (aiState)

@@ -6,10 +6,11 @@ public abstract class Character : MonoBehaviour
 {
     //---- Attributes ----
     [SerializeField] protected CharacterData characterData; 
-    protected IMovable MovableComponent;
+    public  IMovable MovableComponent {  get; protected set; }
+    public  ILiveComponent LiveComponent {  get; protected set; }
 
     //---- Functions ----
-    public void Start()
+    public virtual void Start()
     {
         MovableComponent = new CharacterMovementComponent();
         MovableComponent.Initialize(characterData);
