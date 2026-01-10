@@ -4,9 +4,11 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    [SerializeField] private CharacterData characterData; 
+    //---- Attributes ----
+    [SerializeField] protected CharacterData characterData; 
     protected IMovable MovableComponent;
 
+    //---- Functions ----
     public void Start()
     {
         MovableComponent = new CharacterMovementComponent();

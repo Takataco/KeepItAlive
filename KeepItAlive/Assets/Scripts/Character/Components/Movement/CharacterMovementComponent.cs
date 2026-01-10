@@ -26,11 +26,14 @@ public class CharacterMovementComponent : IMovable
         speed = characterData.DefaultSpeed; 
     }
 
-    //----Functions----
+    //---- Functions ----
     public void Move(Vector3 direction)
     {
-        if(direction == Vector3.zero) 
+        if(direction == Vector3.zero)
+        {
+            characterData.CharacterController.Move(Vector3.zero);
             return;
+        }
 
         float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         Vector3 move = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
