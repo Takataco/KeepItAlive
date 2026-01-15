@@ -15,6 +15,9 @@ public class PlayerCharacter : Character
 
     public override void Update()
     {
+        if (!LiveComponent.IsAlive)
+            return; 
+
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 

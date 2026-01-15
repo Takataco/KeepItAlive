@@ -30,6 +30,7 @@ public class PlayerLiveComponent : ILiveComponent
     public void TakeDamage(float damage)
     {
         Health -= damage;
+        Debug.Log($"Player took {damage} damage. {Health}");
     }
 
     private void SetDeath()

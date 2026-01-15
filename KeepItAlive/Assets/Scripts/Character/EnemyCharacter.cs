@@ -13,6 +13,8 @@ public class EnemyCharacter : Character
     {
         base.Start();
         LiveComponent = new EnemyLiveComponent();
+        AttackComponent = new CharacterAttackComponent();
+        AttackComponent.Initialize(characterData);
     }
 
     public override void Update()
@@ -23,6 +25,7 @@ public class EnemyCharacter : Character
                 return;
             case AiState.MoveToTarget:
                 Move();
+                AttackComponent.DoDamage(targetCharacter);
                 return;
         }
     }

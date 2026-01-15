@@ -6,7 +6,7 @@ public class CharacterAttackComponent : IAttackComponent
 {
     private Transform characterTransform; 
     private float lockDamageTime = 0;
-    private float attackRange = 1;
+    //private float attackRange = 5;
     public float Damage => 5;
 
     public void Initialize(CharacterData characterData)
@@ -22,10 +22,8 @@ public class CharacterAttackComponent : IAttackComponent
         if (!target.LiveComponent.IsAlive) 
             return;
 
-        if (Vector3.Distance(target.transform.position, characterTransform.position) > attackRange)
-        {
-            return; 
-        }
+        if (Vector3.Distance(target.transform.position, characterTransform.position) > 3)
+            return;
 
         if (lockDamageTime > 0)
         {

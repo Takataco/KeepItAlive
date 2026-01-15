@@ -5,9 +5,12 @@ using UnityEngine;
 public abstract class Character : MonoBehaviour
 {
     //---- Attributes ----
-    [SerializeField] protected CharacterData characterData; 
-    public  IMovable MovableComponent {  get; protected set; }
+    [SerializeField] protected CharacterData characterData;
+
+    //---- Properties ----
+    public IMovable MovableComponent {  get; protected set; }
     public  ILiveComponent LiveComponent {  get; protected set; }
+    public IAttackComponent AttackComponent { get; protected set; }
 
     //---- Functions ----
     public virtual void Start()
