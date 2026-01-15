@@ -20,10 +20,13 @@ public class CharacterMovementComponent : IMovable
         }
     }
 
-    public void Initialize(CharacterData characterData)
+    public Vector3 Position => characterData.CharacterTransform.position;
+
+
+    public void Initialize(Character character)
     {
-        this.characterData = characterData;
-        speed = characterData.DefaultSpeed; 
+        this.characterData = character.CharacterData;
+        speed = characterData.DefaultSpeed;
     }
 
     //---- Functions ----
@@ -48,5 +51,7 @@ public class CharacterMovementComponent : IMovable
         float smooth = 0.1f;
         float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         float angle = Mathf.SmoothDampAngle(characterData.CharacterTransform.eulerAngles.y, targetAngle, ref smooth, smooth);
+
+        characterData.CharacterTransform.rotation = Quaternion.Euler(0, angle, 0);
     }
 }

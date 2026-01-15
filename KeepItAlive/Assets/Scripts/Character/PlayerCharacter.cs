@@ -10,20 +10,17 @@ public class PlayerCharacter : Character
     {
         base.Start();
         LiveComponent = new PlayerLiveComponent();
-
+        InputComponent = new PlayerInputComponent();
     }
 
     public override void Update()
     {
         if (!LiveComponent.IsAlive)
-            return; 
+            return;
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        Vector3 moveDirection = InputComponent.GetMoveDirection();
 
-        Vector3 movementVector = new Vector3(moveHorizontal, 0, moveVertical).normalized;
-
-        MovableComponent.Move(movementVector);
-        MovableComponent.Rotation(movementVector);
+        MovableComponent.Move(moveDirection);
+        MovableComponent.Rotation(moveDirection);
     }
 }

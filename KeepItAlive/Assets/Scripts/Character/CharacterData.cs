@@ -12,10 +12,5 @@ public class CharacterData : MonoBehaviour
     // ---- Properties ----
     public float DefaultSpeed => speed;
     public Transform CharacterTransform => characterTransform;
-    public CharacterController CharacterController { 
-        get 
-        {
-            return characterController; 
-        } 
-    }
+    public CharacterController CharacterController => characterController;
 }

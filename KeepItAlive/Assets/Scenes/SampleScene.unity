@@ -759,7 +759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18b4cb3ead1bf249ab9d53347e575cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 3
   characterTransform: {fileID: 1977244225}
   characterController: {fileID: 1977244224}
 --- !u!143 &1977244224

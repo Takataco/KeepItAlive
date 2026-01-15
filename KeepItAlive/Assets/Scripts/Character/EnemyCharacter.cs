@@ -13,19 +13,56 @@ public class EnemyCharacter : Character
     {
         base.Start();
         LiveComponent = new EnemyLiveComponent();
-        AttackComponent = new CharacterAttackComponent();
-        AttackComponent.Initialize(characterData);
+        AttackComponent = new EnemyAttackComponent();
+        AttackComponent.Initialize(this);
+        InputComponent = new EnemyInputComponent(transform, targetCharacter.transform);
+    }
+
+    //for testing purposes 
+    private void OnDrawGizmos()
+    {
+        if (AttackComponent == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, AttackComponent.AttackRange);
     }
 
     public override void Update()
     {
+        //Check if Enemy is Alive
+        if (LiveComponent.Health <= 0)
+            return;
+
+        //Update Attack Cooldown Timer
+        if (AttackComponent.AttackCooldownTimer > 0)
+        {
+            AttackComponent.AttackCooldownTimer -= Time.deltaTime;
+        }
+
+        //Check Distance to Player
+        float distanceToPlayer = Vector3.Distance(targetCharacter.transform.position, transform.position);
+        
+        //State Machine Logic
         switch (aiState)
         {
             case AiState.None:
                 return;
             case AiState.MoveToTarget:
-                Move();
+                if(distanceToPlayer <= AttackComponent.AttackRange && AttackComponent.AttackCooldownTimer <= 0)
+                {
+                    AttackComponent.AttackCooldownTimer = AttackComponent.AttackCooldown;
+                    aiState = AiState.Attack;
+                }
+                else
+                {
+                    Vector3 moveDirection = InputComponent.GetMoveDirection();
+                    MovableComponent.Move(moveDirection);
+                    MovableComponent.Rotation(moveDirection);
+                }
+                return;
+            case AiState.Attack:
                 AttackComponent.DoDamage(targetCharacter);
+                aiState = AiState.MoveToTarget;
                 return;
         }
     }

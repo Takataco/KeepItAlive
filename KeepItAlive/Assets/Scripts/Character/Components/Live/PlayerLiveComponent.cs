@@ -7,7 +7,7 @@ public class PlayerLiveComponent : ILiveComponent
 {
     //---- Attributes ----
     public event Action OnDeath;
-    private float health = 0;
+    private float health = 50;
 
     //---- Properties ----
     public bool IsAlive => health > 0;
@@ -30,7 +30,7 @@ public class PlayerLiveComponent : ILiveComponent
     public void TakeDamage(float damage)
     {
         Health -= damage;
-        Debug.Log($"Player took {damage} damage. {Health}");
+        Debug.Log($"Player took {damage} damage. {Health} health left.");
     }
 
     private void SetDeath()

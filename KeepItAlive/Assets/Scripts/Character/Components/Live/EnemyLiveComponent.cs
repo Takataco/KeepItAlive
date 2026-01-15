@@ -7,7 +7,7 @@ public class EnemyLiveComponent : ILiveComponent
 {
     //---- Attributes ----
     public event Action OnDeath;
-    private float health = 0;
+    private float health = 50;
 
     //---- Properties ----
     public bool IsAlive => health > 0;
