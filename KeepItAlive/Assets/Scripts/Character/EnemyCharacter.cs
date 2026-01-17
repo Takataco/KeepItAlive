@@ -6,16 +6,16 @@ public class EnemyCharacter : Character
 {
     // ---- Attributes ----
     [SerializeField] private AiState aiState;
-    [SerializeField] private Character targetCharacter;
+    public override Character CharacterTarget => GameManager.Instance.CharacterFactory.Player; 
 
     //----Functions----
-    public override void Start()
+    public override void Initialize()
     {
-        base.Start();
+        base.Initialize();
         LiveComponent = new EnemyLiveComponent();
         AttackComponent = new EnemyAttackComponent();
         AttackComponent.Initialize(this);
-        InputComponent = new EnemyInputComponent(transform, targetCharacter.transform);
+        InputComponent = new EnemyInputComponent(transform, CharacterTarget.transform);
     }
 
     //for testing purposes 
@@ -40,7 +40,7 @@ public class EnemyCharacter : Character
         }
 
         //Check Distance to Player
-        float distanceToPlayer = Vector3.Distance(targetCharacter.transform.position, transform.position);
+        float distanceToPlayer = Vector3.Distance(CharacterTarget.transform.position, transform.position);
         
         //State Machine Logic
         switch (aiState)
@@ -61,22 +61,9 @@ public class EnemyCharacter : Character
                 }
                 return;
             case AiState.Attack:
-                AttackComponent.DoDamage(targetCharacter);
+                AttackComponent.DoDamage(CharacterTarget);
                 aiState = AiState.MoveToTarget;
                 return;
         }
     }
-
-    private void Move()
-    {
-        if (targetCharacter == null) 
-            return; 
-
-        Vector3 direction = targetCharacter.transform.position - characterData.CharacterTransform.position;
-        direction = direction.normalized;
-
-        MovableComponent.Move(direction);
-        MovableComponent.Rotation(direction);
-    }
-
 }

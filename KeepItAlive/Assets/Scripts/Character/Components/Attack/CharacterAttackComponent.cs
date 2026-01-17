@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class CharacterAttackComponent : IAttackComponent
 {
+    //---- Attributes ----
     private CharacterData characterData;
     private float attackCooldown = 2;
     private float attackCooldownTimer = 2;
+
+    //---- Properties ----
     public float Damage => 10;
     public float AttackRange => 3.0f;
     public float AttackCooldown => attackCooldown;
@@ -22,6 +25,7 @@ public class CharacterAttackComponent : IAttackComponent
         }
     }
 
+    //---- Functions ----
     public void Initialize(Character character)
     {
         this.characterData = character.CharacterData; 

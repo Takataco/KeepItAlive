@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ScoreSystem
+{
+    //---- Attributes ----
+    private const string SAVE_NAME = "MaxScore";
+    //---- Properties ----
+    public int Score { get; private set; }
+    public int MaxScore { get; private set; }
+    
+    //---- Functions ----
+    public void StartGame() {
+        Score = 0;
+        PlayerPrefs.GetInt(SAVE_NAME, 0);
+    }
+
+    public void EndGame()
+    {
+        if (Score > MaxScore)
+        {
+            MaxScore = Score;
+            PlayerPrefs.SetInt(SAVE_NAME, MaxScore);
+        }
+    }
+
+    public void AddScore(int earnedScore) {
+        Score += earnedScore;
+    }
+}
