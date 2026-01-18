@@ -36,6 +36,7 @@ public class PlayerCharacter : Character
     {
         base.Initialize();
         LiveComponent = new PlayerLiveComponent();
+        LiveComponent.Initialize(this);
 
         AttackComponent = new CharacterAttackComponent();
         AttackComponent.Initialize(this);

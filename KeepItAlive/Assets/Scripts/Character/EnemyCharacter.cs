@@ -13,6 +13,7 @@ public class EnemyCharacter : Character
     {
         base.Initialize();
         LiveComponent = new EnemyLiveComponent();
+        LiveComponent.Initialize(this);
         AttackComponent = new EnemyAttackComponent();
         AttackComponent.Initialize(this);
         InputComponent = new EnemyInputComponent(transform, CharacterTarget.transform);

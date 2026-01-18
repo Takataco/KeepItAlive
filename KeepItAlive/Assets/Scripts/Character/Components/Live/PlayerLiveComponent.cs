@@ -38,6 +38,7 @@ public class PlayerLiveComponent : ILiveComponent
     private void SetDeath()
     {
         OnCharacterDeath?.Invoke(selfCharacter);
+        Debug.Log("Character is dead" + selfCharacter.CharacterType);
     }
 
     public void Initialize(Character selfCharacter)

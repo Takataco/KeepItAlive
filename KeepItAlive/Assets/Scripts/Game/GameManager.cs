@@ -8,15 +8,27 @@ public class GameManager : MonoBehaviour
     //---- Attributes ----
     [SerializeField] private GameData gameData;
     [SerializeField] private CharacterFactory characterFactory;
+    [SerializeField] private CharacterSpawnController characterSpawnController;
+
     private ScoreSystem scoreSystem;
     private bool isGameActive;
     private float gameSessionTime;
-    private float timeBetweenEnemySpawn; 
+    private float timeBetweenEnemySpawn;
+    private int maxEnemyNumber; 
 
     //---- Properties ----
     public static GameManager Instance { get; private set; }
     public CharacterFactory CharacterFactory => characterFactory;
+    public CharacterSpawnController CharacterSpawnController => characterSpawnController;
+    public GameData GameData => gameData;
     public bool IsGameActive => isGameActive;
+    public int MaxEnemyNumber
+    {
+        get
+        {
+            return Mathf.FloorToInt(5 * Mathf.Pow(1.5f, (gameSessionTime/180) - 1));
+        }
+    }
 
     private void Awake()
     {
@@ -74,9 +86,10 @@ public class GameManager : MonoBehaviour
         gameSessionTime += Time.deltaTime;
         timeBetweenEnemySpawn -= Time.deltaTime; 
 
-        if (timeBetweenEnemySpawn <= 0)
+        //сюда добавить проверку на maxenemynumber
+        if (timeBetweenEnemySpawn <= 0 )
         {
-            SpawnEnemy();
+            CharacterSpawnController.SpawnEnemy();
             timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
         }
 
@@ -86,7 +99,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CharacterDeathHandler(Character deadCharacter)
+    public void CharacterDeathHandler(Character deadCharacter)
     {
         switch (deadCharacter.CharacterType)
         {
@@ -103,24 +116,6 @@ public class GameManager : MonoBehaviour
 
         // Unsubscribing a function to the OnCharDeath event using -=
         deadCharacter.LiveComponent.OnCharacterDeath -= CharacterDeathHandler;
-
-    }
-    private void SpawnEnemy()
-    {
-        Character enemy = characterFactory.GetCharacter(CharacterType.DefaultEnemy);
-        Vector3 playerposition = characterFactory.Player.transform.position;
-        enemy.transform.position = new Vector3(playerposition.x + GetOffset(), 0, playerposition.z + GetOffset());
-        enemy.gameObject.SetActive(true);
-        enemy.Initialize();
-        enemy.LiveComponent.OnCharacterDeath += CharacterDeathHandler;
-
-        float GetOffset()
-        {
-            // 50/50 chance to get either result 
-            bool isPlus = Random.Range(0, 100) % 2 == 0;
-            float offset = Random.Range(gameData.MinSpawnOffset, gameData.MaxSpawnOffset);
-            return (isPlus) ? offset : (-1 * offset);
-        }
     }
 
     private void GameVictory()
