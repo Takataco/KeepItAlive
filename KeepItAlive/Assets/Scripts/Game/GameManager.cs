@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -14,7 +15,6 @@ public class GameManager : MonoBehaviour
     private bool isGameActive;
     private float gameSessionTime;
     private float timeBetweenEnemySpawn;
-    private int maxEnemyNumber; 
 
     //---- Properties ----
     public static GameManager Instance { get; private set; }
@@ -26,7 +26,9 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return Mathf.FloorToInt(5 * Mathf.Pow(1.5f, (gameSessionTime/180) - 1));
+            //Exponential formula (basenum * Mathf.Pow(exponent, wave)); 
+            //Сперва будет 5 потом 7 потом 11 потом 16 и тд 
+            return Mathf.FloorToInt(5 * Mathf.Pow(1.5f, (((int)(gameSessionTime) / 60))));
         }
     }
 
@@ -84,12 +86,13 @@ public class GameManager : MonoBehaviour
         }
 
         gameSessionTime += Time.deltaTime;
-        timeBetweenEnemySpawn -= Time.deltaTime; 
+        timeBetweenEnemySpawn -= Time.deltaTime;
 
         //сюда добавить проверку на maxenemynumber
-        if (timeBetweenEnemySpawn <= 0 )
+        if (timeBetweenEnemySpawn <= 0 && characterFactory.ActiveEnemyNumber < MaxEnemyNumber)
         {
             CharacterSpawnController.SpawnEnemy();
+            Debug.Log("Enemy spawned, current MaxEnemyNumber: " + MaxEnemyNumber + "current activeEnemyNumber: " + characterFactory.ActiveEnemyNumber);
             timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
         }
 
@@ -104,6 +107,7 @@ public class GameManager : MonoBehaviour
         switch (deadCharacter.CharacterType)
         {
             case CharacterType.Player:
+                Debug.Log("Calling GameOver()");
                 GameOver();
                 break;
             case CharacterType.DefaultEnemy:
@@ -127,8 +131,8 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        scoreSystem.EndGame();
         Debug.Log("Defeat");
+        scoreSystem.EndGame();
         isGameActive = false;
     }
 }

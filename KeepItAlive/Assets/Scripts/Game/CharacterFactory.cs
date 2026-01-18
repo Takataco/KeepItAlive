@@ -12,6 +12,7 @@ public class CharacterFactory : MonoBehaviour
         = new Dictionary<CharacterType, Queue<Character>>();
 
     private List<Character> activeCharacters = new List<Character>();
+    private int activeEnemyNumber = 0;
 
     //---- Properties ----
     public Character Player
@@ -20,7 +21,8 @@ public class CharacterFactory : MonoBehaviour
     }
 
     public List<Character> ActiveCharacters => activeCharacters;
-    
+    public int ActiveEnemyNumber => activeEnemyNumber;
+
     //---- Functions ----
     public Character GetCharacter(CharacterType type)
     {
@@ -43,13 +45,23 @@ public class CharacterFactory : MonoBehaviour
         }
         
         activeCharacters.Add(character);
+
+        if (character.CharacterType == CharacterType.DefaultEnemy)
+        {
+            activeEnemyNumber++;
+        }
+
         return character;
     }
 
     public void ReturnCharacter(Character character)
     {
         Queue<Character> characters = disabledCharacers[character.CharacterType];
-        characters.Enqueue(character); 
+        characters.Enqueue(character);
+        if (character.CharacterType == CharacterType.DefaultEnemy)
+        {
+            activeEnemyNumber--;
+        }
         activeCharacters.Remove(character);
     }
 
