@@ -17,6 +17,9 @@ public class PlayerCharacter : Character
                 if(list[i].CharacterType == CharacterType.Player)
                     continue;
 
+                if (!list[i].LiveComponent.IsAlive)
+                    continue;
+
                 float distanceBetween = Vector3.Distance(list[i].transform.position, transform.position);
                 if(distanceBetween < minDistance)
                 {
@@ -25,21 +28,24 @@ public class PlayerCharacter : Character
                 }
             }
             return target; 
-        }
+        } 
     }
+
     //---- Functions ----
     public override void Initialize()
     {
         base.Initialize();
         LiveComponent = new PlayerLiveComponent();
+
         AttackComponent = new CharacterAttackComponent();
         AttackComponent.Initialize(this);
+
         InputComponent = new PlayerInputComponent();
     }
 
     public override void Update()
     {
-        if (!LiveComponent.IsAlive)
+        if (!LiveComponent.IsAlive || !GameManager.Instance.IsGameActive)
             return;
 
         Vector3 moveDirection = InputComponent.GetMoveDirection();
@@ -50,9 +56,6 @@ public class PlayerCharacter : Character
             AttackComponent.AttackCooldownTimer -= Time.deltaTime;
         }
 
-        //Check Distance to Target
-        float distanceToTarget = Vector3.Distance(CharacterTarget.transform.position, transform.position);
-
         if (CharacterTarget == null)
         {
             MovableComponent.Rotation(moveDirection);
@@ -62,8 +65,10 @@ public class PlayerCharacter : Character
             Vector3 rotationDirection = CharacterTarget.transform.position - transform.position;
             MovableComponent.Rotation(rotationDirection);
 
-            if (Input.GetKeyDown("Jump"))
+            if (Input.GetButtonDown("Jump"))
             {
+                //Check Distance to Target
+                float distanceToTarget = Vector3.Distance(CharacterTarget.transform.position, transform.position);
                 if (distanceToTarget <= AttackComponent.AttackRange && AttackComponent.AttackCooldownTimer <= 0)
                 {
                     AttackComponent.DoDamage(CharacterTarget);
@@ -72,6 +77,5 @@ public class PlayerCharacter : Character
         }
 
         MovableComponent.Move(moveDirection);
-        MovableComponent.Rotation(moveDirection);
     }
 }

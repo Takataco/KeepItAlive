@@ -9,13 +9,15 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected CharacterData characterData;
 
     //---- Properties ----
+    public CharacterType CharacterType => characterType;
+    public CharacterData CharacterData => characterData;
+
     public virtual Character CharacterTarget { get; }
-    public CharacterType CharacterType => CharacterType;
+
     public IMovable MovableComponent {  get; protected set; }
     public  ILiveComponent LiveComponent {  get; protected set; }
     public IAttackComponent AttackComponent { get; protected set; }
     public IInputComponent InputComponent;
-    public CharacterData CharacterData => characterData;
 
     //---- Functions ----
     public virtual void Initialize()

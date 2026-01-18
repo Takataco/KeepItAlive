@@ -13,7 +13,7 @@ public class ScoreSystem
     //---- Functions ----
     public void StartGame() {
         Score = 0;
-        PlayerPrefs.GetInt(SAVE_NAME, 0);
+        MaxScore = PlayerPrefs.GetInt(SAVE_NAME, 0);
     }
 
     public void EndGame()

@@ -60,14 +60,15 @@ public class CharacterFactory : MonoBehaviour
         {
             case CharacterType.Player:
                 character = GameObject.Instantiate(playerCharacterPrefab, null);
-
-                break;
-            case CharacterType.DefaultEnemy:
-                character = GameObject.Instantiate(enemyCharacterPrefab, null);
+                Debug.Log("Character with following type created :" + type);
                 Player = character;
                 break;
+            case CharacterType.DefaultEnemy:
+                character = GameObject.Instantiate(enemyCharacterPrefab, null); 
+                Debug.Log("Character with following type created :" + type);
+                break;
             default:
-                Debug.LogError("Unkown character type :" + type);
+                Debug.LogError("Unknown character type :" + type);
                 break;
         }
         return character;

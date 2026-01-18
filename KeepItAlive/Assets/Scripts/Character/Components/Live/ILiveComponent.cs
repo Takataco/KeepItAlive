@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ILiveComponent
+public interface ILiveComponent : ICharacterComponent
 {
     //---- Attributes ----
-    public event Action OnDeath;
+    public event Action<Character> OnCharacterDeath;
 
     //---- Properties ----
     public int MaxHealth { get;}

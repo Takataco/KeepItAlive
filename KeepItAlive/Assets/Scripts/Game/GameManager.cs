@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     //---- Properties ----
     public static GameManager Instance { get; private set; }
     public CharacterFactory CharacterFactory => characterFactory;
+    public bool IsGameActive => isGameActive;
 
     private void Awake()
     {
@@ -52,6 +53,8 @@ public class GameManager : MonoBehaviour
         // Turns on the game object of the player 
         player.gameObject.SetActive(true);
         player.Initialize();
+        // Subscribing a function to the OnCharDeath event using +=
+        player.LiveComponent.OnCharacterDeath += CharacterDeathHandler;
 
         gameSessionTime = 0;
         timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
@@ -73,6 +76,7 @@ public class GameManager : MonoBehaviour
 
         if (timeBetweenEnemySpawn <= 0)
         {
+            SpawnEnemy();
             timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
         }
 
@@ -97,6 +101,9 @@ public class GameManager : MonoBehaviour
         deadCharacter.gameObject.SetActive(false);
         characterFactory.ReturnCharacter(deadCharacter);
 
+        // Unsubscribing a function to the OnCharDeath event using -=
+        deadCharacter.LiveComponent.OnCharacterDeath -= CharacterDeathHandler;
+
     }
     private void SpawnEnemy()
     {
@@ -105,6 +112,7 @@ public class GameManager : MonoBehaviour
         enemy.transform.position = new Vector3(playerposition.x + GetOffset(), 0, playerposition.z + GetOffset());
         enemy.gameObject.SetActive(true);
         enemy.Initialize();
+        enemy.LiveComponent.OnCharacterDeath += CharacterDeathHandler;
 
         float GetOffset()
         {

@@ -30,7 +30,7 @@ public class EnemyCharacter : Character
     public override void Update()
     {
         //Check if Enemy is Alive
-        if (LiveComponent.Health <= 0)
+        if (!LiveComponent.IsAlive || !GameManager.Instance.IsGameActive)
             return;
 
         //Update Attack Cooldown Timer

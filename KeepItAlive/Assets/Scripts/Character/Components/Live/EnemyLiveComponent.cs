@@ -6,7 +6,9 @@ using UnityEngine;
 public class EnemyLiveComponent : ILiveComponent
 {
     //---- Attributes ----
-    public event Action OnDeath;
+    private Character selfCharacter;
+    public event Action<Character> OnCharacterDeath;
+
     private float health = 50;
 
     //---- Properties ----
@@ -34,6 +36,11 @@ public class EnemyLiveComponent : ILiveComponent
 
     private void SetDeath()
     {
-        OnDeath?.Invoke();
+        OnCharacterDeath?.Invoke(selfCharacter);
+    }
+
+    public void Initialize(Character selfCharacter)
+    {
+        this.selfCharacter = selfCharacter;
     }
 }
