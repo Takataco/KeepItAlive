@@ -11,7 +11,7 @@ public class CharacterAttackComponent : IAttackComponent
 
     //---- Properties ----
     public float Damage => 10;
-    public float AttackRange => 3.0f;
+    public float AttackRange => 5.0f;
     public float AttackCooldown => attackCooldown;
     public float AttackCooldownTimer
     {
