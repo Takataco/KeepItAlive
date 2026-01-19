@@ -76,6 +76,7 @@ public class GameManager : MonoBehaviour
         scoreSystem.StartGame();
 
         isGameActive = true;
+
     }
 
     private void Update()
