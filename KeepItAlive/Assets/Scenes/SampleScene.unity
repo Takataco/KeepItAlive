@@ -452,7 +452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameData: {fileID: 11400000, guid: e43337ff5e82fda468d2c9a71c28c75d, type: 2}
   characterFactory: {fileID: 1602135221}
-  characterSpawnController: {fileID: 0}
+  characterSpawnController: {fileID: 586664379}
 --- !u!4 &1202813562
 Transform:
   m_ObjectHideFlags: 0
