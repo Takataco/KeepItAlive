@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,18 +11,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameData gameData;
     [SerializeField] private CharacterFactory characterFactory;
     [SerializeField] private CharacterSpawnController characterSpawnController;
+    [SerializeField] private WindowsService windowsService;
 
-    private ScoreSystem scoreSystem;
-    private bool isGameActive;
+    private bool isGameActive = false;
     private float gameSessionTime;
     private float timeBetweenEnemySpawn;
 
     //---- Properties ----
     public static GameManager Instance { get; private set; }
+    public ScoreManager ScoreManager { get; private set; }
+    public WindowsService WindowsService => windowsService;
     public CharacterFactory CharacterFactory => characterFactory;
     public CharacterSpawnController CharacterSpawnController => characterSpawnController;
     public GameData GameData => gameData;
     public bool IsGameActive => isGameActive;
+    public float GameSessionTime => gameSessionTime;
     public int MaxEnemyNumber
     {
         get
@@ -32,6 +36,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool IsGamePaused
+    {
+        get;
+        set;
+    } = true;
+
+    //---- Functions ----
     private void Awake()
     {
         if (Instance == null)
@@ -51,17 +62,21 @@ public class GameManager : MonoBehaviour
 
     private void Initialize()
     {
-        scoreSystem = new ScoreSystem();
-        isGameActive = false; 
+        ScoreManager = new ScoreManager();
+        windowsService.Initialize();
     }
 
     //method to start game 
     public void StartGame()
     {
         if (isGameActive)
-            return; 
+        {
+            Debug.Log("Game is already active");
+            return;
+        }
 
-        Character player = characterFactory.GetCharacter(CharacterType.Player);
+        //create a character 
+        var player = characterFactory.GetCharacter(CharacterType.Player);
         //spawn point of player character
         player.transform.position = Vector3.zero;
         // Turns on the game object of the player 
@@ -70,31 +85,31 @@ public class GameManager : MonoBehaviour
         // Subscribing a function to the OnCharDeath event using +=
         player.LiveComponent.OnCharacterDeath += CharacterDeathHandler;
 
-        gameSessionTime = 0;
+        gameSessionTime = 0f;
         timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
 
-        scoreSystem.StartGame();
-
+        ScoreManager.StartGame();
         isGameActive = true;
+        IsGamePaused = false;
 
     }
 
     private void Update()
     {
-        if (!isGameActive)
+        if (!isGameActive || IsGamePaused)
         {
             return;
         }
 
         gameSessionTime += Time.deltaTime;
-        timeBetweenEnemySpawn -= Time.deltaTime;
+        timeBetweenEnemySpawn += Time.deltaTime;
 
         //сюда добавить проверку на maxenemynumber
-        if (timeBetweenEnemySpawn <= 0 && characterFactory.ActiveEnemyNumber < MaxEnemyNumber)
+        if (timeBetweenEnemySpawn >= gameData.TimeBetweenEnemySpawn && characterFactory.ActiveEnemyNumber < MaxEnemyNumber)
         {
             CharacterSpawnController.SpawnEnemy();
             Debug.Log("Enemy spawned, current MaxEnemyNumber: " + MaxEnemyNumber + "current activeEnemyNumber: " + characterFactory.ActiveEnemyNumber);
-            timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
+            timeBetweenEnemySpawn = 0;
         }
 
         if (gameSessionTime >= gameData.SessionTimeSeconds)
@@ -105,19 +120,19 @@ public class GameManager : MonoBehaviour
 
     public void CharacterDeathHandler(Character deadCharacter)
     {
+        Debug.Log("character " + deadCharacter.gameObject.name + " is dead");
         switch (deadCharacter.CharacterType)
         {
             case CharacterType.Player:
-                Debug.Log("Calling GameOver()");
                 GameOver();
                 break;
             case CharacterType.DefaultEnemy:
-                scoreSystem.AddScore(deadCharacter.CharacterData.ScoreCost);
+                ScoreManager.AddScore(deadCharacter.CharacterData.ScoreCost);
                 break;
         }
 
-        deadCharacter.gameObject.SetActive(false);
         characterFactory.ReturnCharacter(deadCharacter);
+        deadCharacter.gameObject.SetActive(false);
 
         // Unsubscribing a function to the OnCharDeath event using -=
         deadCharacter.LiveComponent.OnCharacterDeath -= CharacterDeathHandler;
@@ -125,15 +140,18 @@ public class GameManager : MonoBehaviour
 
     private void GameVictory()
     {
-        scoreSystem.EndGame();
-        Debug.Log("Vicotry");
+        ScoreManager.CompleteMatch();
         isGameActive = false;
+        IsGamePaused = true;
+        WindowsService.ShowWindow<VictoryWindow>(false);
     }
 
     private void GameOver()
     {
         Debug.Log("Defeat");
-        scoreSystem.EndGame();
+        ScoreManager.CompleteMatch();
         isGameActive = false;
+        IsGamePaused = true;
+        WindowsService.ShowWindow<DefeatWindow>(false);
     }
 }

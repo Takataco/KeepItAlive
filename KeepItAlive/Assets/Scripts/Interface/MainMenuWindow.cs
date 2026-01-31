@@ -30,14 +30,14 @@ public class MainMenuWindow : Window
 
     private void StartGameHandler()
     {
-        GameManager.Instance.GameStart();
-        GameManager.Instance.WindowsService.ShowWindow<GameplayWindow>(true);
+        GameManager.Instance.StartGame();
+        GameManager.Instance.WindowsService.ShowWindow<GameplayWindow>(false);
         Hide(false);
     }
 
     private void OpenOptionsHandler()
     {
-        Hide(false);
-        GameManager.Instance.WindowsService.ShowWindow<OptionsWindow>(false);
+        //Hide(false);
+        //GameManager.Instance.WindowsService.ShowWindow<OptionsWindow>(false);
     }
 }

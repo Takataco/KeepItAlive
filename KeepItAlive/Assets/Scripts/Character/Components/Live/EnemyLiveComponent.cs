@@ -8,6 +8,7 @@ public class EnemyLiveComponent : ILiveComponent
     //---- Attributes ----
     private Character selfCharacter;
     public event Action<Character> OnCharacterDeath;
+    public event Action<Character> OnCharacterHealthChange;
 
     private float health = 10;
 

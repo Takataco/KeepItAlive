@@ -1,9 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
-public class WindowService : MonoBehaviour
+public class WindowsService : MonoBehaviour
 {
     [SerializeField] private Window[] windows;
     private Dictionary<Type, Window> windowsDictionary; 

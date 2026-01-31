@@ -1,18 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DefeatWindow : MonoBehaviour
+public class DefeatWindow : Window
 {
-    // Start is called before the first frame update
-    void Start()
+    //---- Attributes ----
+    [SerializeField] private Button restartButton;
+    [SerializeField] private Button returnToMainMenuButton;
+
+    //---- Functions ----
+    public override void Initialize()
     {
-        
+        restartButton.onClick.AddListener(OnRestartButtonClicked);
+        returnToMainMenuButton.onClick.AddListener(OnReturnToMainMenuButtonClicked); 
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnReturnToMainMenuButtonClicked()
     {
-        
+        Hide(true);
+        GameManager.Instance.WindowsService.ShowWindow<MainMenuWindow>(false);
     }
+
+    private void OnRestartButtonClicked()
+    {
+        Hide(true);
+        GameManager.Instance.WindowsService.ShowWindow<GameplayWindow>(false);
+        GameManager.Instance.StartGame();
+    }
+    
 }

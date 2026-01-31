@@ -8,6 +8,7 @@ public class PlayerLiveComponent : ILiveComponent
     //---- Attributes ----
     private Character selfCharacter; 
     public event Action<Character> OnCharacterDeath;
+    public event Action<Character> OnCharacterHealthChange;
 
     private float health = 50;
 
@@ -20,6 +21,9 @@ public class PlayerLiveComponent : ILiveComponent
         private set
         {
             health = value;
+            if (health > MaxHealth)
+                health = MaxHealth;
+
             if (health <= 0)
             {
                 health = 0;
@@ -44,5 +48,6 @@ public class PlayerLiveComponent : ILiveComponent
     public void Initialize(Character selfCharacter)
     {
         this.selfCharacter = selfCharacter;
+        health = MaxHealth;
     }
 }

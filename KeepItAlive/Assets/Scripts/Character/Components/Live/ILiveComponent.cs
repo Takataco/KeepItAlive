@@ -7,6 +7,7 @@ public interface ILiveComponent : ICharacterComponent
 {
     //---- Attributes ----
     public event Action<Character> OnCharacterDeath;
+    public event Action<Character> OnCharacterHealthChange; 
 
     //---- Properties ----
     public int MaxHealth { get;}

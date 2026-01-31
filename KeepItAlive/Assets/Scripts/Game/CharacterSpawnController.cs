@@ -10,7 +10,7 @@ public class CharacterSpawnController : MonoBehaviour
 
     public void SpawnEnemy()
     {
-        Character enemy = characterFactory.GetCharacter(CharacterType.DefaultEnemy);
+        var enemy = characterFactory.GetCharacter(CharacterType.DefaultEnemy);
         Vector3 playerposition = characterFactory.Player.transform.position;
         enemy.transform.position = new Vector3(playerposition.x + GetOffset(), 0, playerposition.z + GetOffset());
         enemy.gameObject.SetActive(true);
