@@ -4,14 +4,31 @@ using UnityEngine;
 
 public class CharacterAttackComponent : IAttackComponent
 {
-    private Transform characterTransform; 
-    private float lockDamageTime = 0;
-    //private float attackRange = 5;
-    public float Damage => 5;
+    //---- Attributes ----
+    private CharacterData characterData;
+    private float attackCooldown = 2;
+    private float attackCooldownTimer = 2;
 
-    public void Initialize(CharacterData characterData)
+    //---- Properties ----
+    public float Damage => 10;
+    public float AttackRange => 5.0f;
+    public float AttackCooldown => attackCooldown;
+    public float AttackCooldownTimer
     {
-        characterTransform = characterData.CharacterTransform; 
+        get
+        {
+            return attackCooldownTimer;
+        }
+        set
+        {
+            attackCooldownTimer = Mathf.Clamp(value, 0, attackCooldown);
+        }
+    }
+
+    //---- Functions ----
+    public void Initialize(Character character)
+    {
+        this.characterData = character.CharacterData; 
     }
 
     public void DoDamage(Character target)
@@ -22,15 +39,9 @@ public class CharacterAttackComponent : IAttackComponent
         if (!target.LiveComponent.IsAlive) 
             return;
 
-        if (Vector3.Distance(target.transform.position, characterTransform.position) > 3)
-            return;
-
-        if (lockDamageTime > 0)
+        if (Vector3.Distance(characterData.CharacterTransform.position, target.transform.position) <= AttackRange)
         {
-            lockDamageTime -= Time.deltaTime;
-            return; 
+            target.LiveComponent.TakeDamage(Damage);
         }
-        target.LiveComponent.TakeDamage(Damage);
-        lockDamageTime = 1; 
     }
 }

@@ -6,8 +6,11 @@ using UnityEngine;
 public class PlayerLiveComponent : ILiveComponent
 {
     //---- Attributes ----
-    public event Action OnDeath;
-    private float health = 0;
+    private Character selfCharacter; 
+    public event Action<Character> OnCharacterDeath;
+    public event Action<Character> OnCharacterHealthChange;
+
+    private float health = 50;
 
     //---- Properties ----
     public bool IsAlive => health > 0;
@@ -18,7 +21,10 @@ public class PlayerLiveComponent : ILiveComponent
         private set
         {
             health = value;
-            if (health < 0)
+            if (health > MaxHealth)
+                health = MaxHealth;
+
+            if (health <= 0)
             {
                 health = 0;
                 SetDeath();
@@ -30,11 +36,18 @@ public class PlayerLiveComponent : ILiveComponent
     public void TakeDamage(float damage)
     {
         Health -= damage;
-        Debug.Log($"Player took {damage} damage. {Health}");
+        Debug.Log($"Player took {damage} damage. {Health} health left.");
     }
 
     private void SetDeath()
     {
-        OnDeath?.Invoke();
+        Debug.Log("Character is dead" + selfCharacter.CharacterType);
+        OnCharacterDeath?.Invoke(selfCharacter);
+    }
+
+    public void Initialize(Character selfCharacter)
+    {
+        this.selfCharacter = selfCharacter;
+        health = MaxHealth;
     }
 }

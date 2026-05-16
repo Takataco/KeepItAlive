@@ -6,40 +6,65 @@ public class EnemyCharacter : Character
 {
     // ---- Attributes ----
     [SerializeField] private AiState aiState;
-    [SerializeField] private Character targetCharacter;
+    public override Character CharacterTarget => GameManager.Instance.CharacterFactory.Player; 
 
     //----Functions----
-    public override void Start()
+    public override void Initialize()
     {
-        base.Start();
+        base.Initialize();
         LiveComponent = new EnemyLiveComponent();
-        AttackComponent = new CharacterAttackComponent();
-        AttackComponent.Initialize(characterData);
+        LiveComponent.Initialize(this);
+        AttackComponent = new EnemyAttackComponent();
+        AttackComponent.Initialize(this);
+        InputComponent = new EnemyInputComponent(transform, CharacterTarget.transform);
+    }
+
+    //for testing purposes 
+    private void OnDrawGizmos()
+    {
+        if (AttackComponent == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, AttackComponent.AttackRange);
     }
 
     public override void Update()
     {
+        //Check if Enemy is Alive
+        if (!LiveComponent.IsAlive || !GameManager.Instance.IsGameActive)
+            return;
+
+        //Update Attack Cooldown Timer
+        if (AttackComponent.AttackCooldownTimer > 0)
+        {
+            AttackComponent.AttackCooldownTimer -= Time.deltaTime;
+        }
+
+        //Check Distance to Player
+        float distanceToPlayer = Vector3.Distance(CharacterTarget.transform.position, transform.position);
+        
+        //State Machine Logic
         switch (aiState)
         {
             case AiState.None:
                 return;
             case AiState.MoveToTarget:
-                Move();
-                AttackComponent.DoDamage(targetCharacter);
+                if(distanceToPlayer <= AttackComponent.AttackRange && AttackComponent.AttackCooldownTimer <= 0)
+                {
+                    AttackComponent.AttackCooldownTimer = AttackComponent.AttackCooldown;
+                    aiState = AiState.Attack;
+                }
+                else
+                {
+                    Vector3 moveDirection = InputComponent.GetMoveDirection();
+                    MovableComponent.Move(moveDirection);
+                    MovableComponent.Rotation(moveDirection);
+                }
+                return;
+            case AiState.Attack:
+                AttackComponent.DoDamage(CharacterTarget);
+                aiState = AiState.MoveToTarget;
                 return;
         }
     }
-
-    private void Move()
-    {
-        if (targetCharacter == null) 
-            return; 
-
-        Vector3 direction = targetCharacter.transform.position - characterData.CharacterTransform.position;
-        direction = direction.normalized;
-
-        MovableComponent.Move(direction);
-        MovableComponent.Rotation(direction);
-    }
-
 }
