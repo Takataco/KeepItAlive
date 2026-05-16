@@ -1,6 +1,7 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; 
 
 public class GameplayWindow : Window
 {
@@ -12,8 +13,21 @@ public class GameplayWindow : Window
 
     [Space][SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text coinsText;
+    [SerializeField] private Button pauseButton;
 
     //---- Functions ----
+    public override void Initialize()
+    {
+        pauseButton.onClick.AddListener(OnPauseButtonClicked);
+    }
+    private void OnPauseButtonClicked()
+    {
+        GameManager.Instance.IsGamePaused = true;
+        GameManager.Instance.WindowsService.ShowWindow<PauseWindow>(false);
+    }
+
+
     protected override void OpenStart()
     {
         base.OpenStart();
@@ -25,6 +39,12 @@ public class GameplayWindow : Window
         ScoreChangeHandler(GameManager.Instance.ScoreManager.GameScore);
         GameManager.Instance.ScoreManager.OnScoreChanged += ScoreChangeHandler;
 
+        //UpdateExperience(GameManager.Instance.SessionExperienceManager.Experience,
+        //GameManager.Instance.SessionExperienceManager.ExperienceMax);
+
+        //GameManager.Instance.SessionExperienceManager.OnExperienceUp += UpdateExperience;
+
+
         UpdateTimer();
     }
 
@@ -32,13 +52,15 @@ public class GameplayWindow : Window
     {
         base.CloseStart();
 
+        //GameManager.Instance.SessionExperienceManager.OnExperienceUp -= UpdateExperience;
+        GameManager.Instance.ScoreManager.OnScoreChanged -= ScoreChangeHandler;
+
         var player = GameManager.Instance.CharacterFactory.Player;
         if (player == null)
         {
             return;
         }
         player.LiveComponent.OnCharacterHealthChange -= UpdateHealthVisual;
-        GameManager.Instance.ScoreManager.OnScoreChanged -= ScoreChangeHandler;
     }
 
     private void UpdateHealthVisual(Character character)

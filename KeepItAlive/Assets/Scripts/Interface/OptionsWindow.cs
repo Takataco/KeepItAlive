@@ -1,18 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class OptionsWindow : MonoBehaviour
+public class OptionsWindow : Window
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Toggle musicToggle;
+    [SerializeField] private Toggle soundsToggle;
+
+    [SerializeField] private Button closeButton;
+
+    public override void Initialize()
     {
-        
+        musicToggle.onValueChanged.AddListener(MusicToggleHandler);
+        soundsToggle.onValueChanged.AddListener(SoundsToggleHandler);
+        closeButton.onClick.AddListener(CloseOptionsHandler);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void CloseOptionsHandler()
     {
-        
+        Hide(true);
+        GameManager.Instance.WindowsService.ShowWindow<MainMenuWindow>(false);
+    }
+    private void SoundsToggleHandler(bool isEnable)
+    {
+        //SimpleAudioSystemService.Instance.SetVolume(AudioSystemType.Sounds, isEnable);
+        //SimpleAudioSystemService.Instance.SetVolume(AudioSystemType.UISounds, isEnable);
+    }
+
+    private void MusicToggleHandler(bool isEnable)
+    {
+        //SimpleAudioSystemService.Instance.SetVolume(AudioSystemType.Ambient, isEnable);
     }
 }

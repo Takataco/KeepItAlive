@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +5,13 @@ public class MainMenuWindow : Window
 {
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button optionsGameButton;
+    [SerializeField] private Button aboutGameButton;
 
     public override void Initialize()
     {
         startGameButton.onClick.AddListener(StartGameHandler);
         optionsGameButton.onClick.AddListener(OpenOptionsHandler);
+        aboutGameButton.onClick.AddListener(AboutHandler);
     }
 
     protected override void OpenEnd()
@@ -30,14 +30,18 @@ public class MainMenuWindow : Window
 
     private void StartGameHandler()
     {
+        Hide(true);
         GameManager.Instance.StartGame();
-        GameManager.Instance.WindowsService.ShowWindow<GameplayWindow>(false);
-        Hide(false);
+        GameManager.Instance.WindowsService.ShowWindow<GameplayWindow>(true);
     }
 
     private void OpenOptionsHandler()
     {
-        //Hide(false);
-        //GameManager.Instance.WindowsService.ShowWindow<OptionsWindow>(false);
+        GameManager.Instance.WindowsService.ShowWindow<OptionsWindow>(false);
+    }
+
+    private void AboutHandler()
+    {
+        //nothing for now
     }
 }

@@ -47,7 +47,8 @@ public abstract class Window : MonoBehaviour
     }
     protected virtual void OpenStart()
     {
-
+        this.gameObject.SetActive(true);
+        IsOpened = true;
     }
     protected virtual void OpenEnd()
     {
@@ -56,11 +57,11 @@ public abstract class Window : MonoBehaviour
 
     protected virtual void CloseEnd()
     {
-
+        this.gameObject.SetActive(false);
     }
 
     protected virtual void CloseStart()
     {
-
+        IsOpened = false;
     }
 }

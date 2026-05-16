@@ -53,6 +53,7 @@ public class ScoreManager
         IsNewScoreRecord = false;
     }
 
+    /* old???
     public void AddScore(int scoreCost)
     {
         gameScore += scoreCost;
@@ -66,9 +67,24 @@ public class ScoreManager
         PlayerPrefs.SetInt(SESSION_SCORE_MAX, scoreMax);
         IsNewScoreRecord = true;
     }
+    */
 
     public void CompleteMatch()
     {
         GlobalGameScore += gameScore;
+    }
+    
+    //added 
+    public void CharacterDeathHandler(Character character)
+    {
+        gameScore += character.CharacterData.ScoreCost; // add score of enemy to you
+        OnScoreChanged?.Invoke(gameScore);
+
+        if (gameScore <= scoreMax)
+            return;
+
+        scoreMax = GameScore;
+        PlayerPrefs.SetInt(SESSION_SCORE_MAX, scoreMax);
+        IsNewScoreRecord = true;
     }
 }

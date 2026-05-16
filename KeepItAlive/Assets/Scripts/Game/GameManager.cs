@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private WindowsService windowsService;
 
     private bool isGameActive = false;
+    private bool isGamePaused = true;
     private float gameSessionTime;
     private float timeBetweenEnemySpawn;
 
@@ -38,9 +39,12 @@ public class GameManager : MonoBehaviour
 
     public bool IsGamePaused
     {
-        get;
-        set;
-    } = true;
+        get => isGamePaused;
+        set
+        {
+            isGamePaused = value;
+        }
+    }
 
     //---- Functions ----
     private void Awake()
@@ -127,7 +131,7 @@ public class GameManager : MonoBehaviour
                 GameOver();
                 break;
             case CharacterType.DefaultEnemy:
-                ScoreManager.AddScore(deadCharacter.CharacterData.ScoreCost);
+                ScoreManager.CharacterDeathHandler(deadCharacter);
                 break;
         }
 
@@ -143,6 +147,7 @@ public class GameManager : MonoBehaviour
         ScoreManager.CompleteMatch();
         isGameActive = false;
         IsGamePaused = true;
+        WindowsService.HideWindow<GameplayWindow>(true);
         WindowsService.ShowWindow<VictoryWindow>(false);
     }
 
@@ -152,6 +157,7 @@ public class GameManager : MonoBehaviour
         ScoreManager.CompleteMatch();
         isGameActive = false;
         IsGamePaused = true;
+        WindowsService.HideWindow<GameplayWindow>(true);
         WindowsService.ShowWindow<DefeatWindow>(false);
     }
 }

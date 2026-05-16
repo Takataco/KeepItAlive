@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WindowsService : MonoBehaviour
 {
+    //A special tool class for handling UI Canvas Windows
+    // Saves all windows in a dictionary and ensures they're singletons
     [SerializeField] private Window[] windows;
     private Dictionary<Type, Window> windowsDictionary; 
 
@@ -20,11 +22,13 @@ public class WindowsService : MonoBehaviour
         ShowWindow<MainMenuWindow>(true);
     }
 
+    // A getter function 
     public T GetWindow<T>() where T : Window
     {
         return windowsDictionary[typeof(T)] as T;
     }    
     
+
     public void ShowWindow<T>(bool isImmediately) where T : Window
     {
         var window = windowsDictionary[typeof(T)] as T; 
@@ -35,7 +39,7 @@ public class WindowsService : MonoBehaviour
         }
         window.Show(isImmediately);
     }
-
+    
     public void HideWindow<T>(bool isImmediately) where T : Window
     {
         var window = windowsDictionary[typeof(T)] as T;
